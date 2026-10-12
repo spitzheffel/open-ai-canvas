@@ -57,7 +57,9 @@ assets/prototypes/.*.drawio.bkp
 .fleet/
 .history/
 .cache/
-.claude/
+# Keep project skills versioned; other local Claude state stays ignored.
+.claude/*
+!.claude/skills/
 .cursor/
 .playwright-mcp/
 .serena/
