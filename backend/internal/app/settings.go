@@ -13,6 +13,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
@@ -487,7 +488,12 @@ func publishSettingsKey(path string, key []byte, link func(string, string) error
 			return err
 		}
 	}
-	// Persist the published name, not only the inode's contents.
+	// Persist the published name, not only the inode's contents. Windows rejects
+	// FlushFileBuffers on directory handles (ERROR_ACCESS_DENIED); skip it there
+	// instead of failing the first request that needs the key.
+	if runtime.GOOS == "windows" {
+		return nil
+	}
 	dir, err := os.Open(filepath.Dir(path))
 	if err != nil {
 		return err
